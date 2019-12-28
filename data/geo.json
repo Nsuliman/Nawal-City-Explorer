@@ -1,21 +1,74 @@
-[
+{
+    "results": [
     {
-    "place_id": "222943963",
-    "licence": "https://locationiq.com/attribution",
-    "osm_type": "relation",
-    "osm_id": "237662",
-    "boundingbox": [
-    "47.802219",
-    "47.853569",
-    "-122.34211",
-    "-122.261618"
-    ],
-    "lat": "47.8278656",
-    "lon": "-122.3053932",
-    "display_name": "Lynnwood, Snohomish County, Washington, USA",
-    "class": "place",
-    "type": "city",
-    "importance": 0.61729106268039,
-    "icon": "https://locationiq.org/static/images/mapicons/poi_place_city.p.20.png"
-    }
+    "address_components": [
+    {
+    "long_name": "Lynnwood",
+    "short_name": "Lynnwood",
+    "types": [
+    "locality",
+    "political"
     ]
+    },
+    {
+    "long_name": "Snohomish County",
+    "short_name": "Snohomish County",
+    "types": [
+    "administrative_area_level_2",
+    "political"
+    ]
+    },
+    {
+    "long_name": "Washington",
+    "short_name": "WA",
+    "types": [
+    "administrative_area_level_1",
+    "political"
+    ]
+    },
+    {
+    "long_name": "United States",
+    "short_name": "US",
+    "types": [
+    "country",
+    "political"
+    ]
+    }
+    ],
+    "formatted_address": "Lynnwood, WA, USA",
+    "geometry": {
+    "bounds": {
+    "northeast": {
+    "lat": 47.85356789999999,
+    "lng": -122.261618
+    },
+    "southwest": {
+    "lat": 47.80221909999999,
+    "lng": -122.34211
+    }
+    },
+    "location": {
+    "lat": 47.8209301,
+    "lng": -122.3151314
+    },
+    "location_type": "APPROXIMATE",
+    "viewport": {
+    "northeast": {
+    "lat": 47.85356789999999,
+    "lng": -122.261618
+    },
+    "southwest": {
+    "lat": 47.80221909999999,
+    "lng": -122.34211
+    }
+    }
+    },
+    "place_id": "ChIJEYkHncUEkFQRFnhH_GZSc24",
+    "types": [
+    "locality",
+    "political"
+    ]
+    }
+    ],
+    "status": "OK"
+    }
