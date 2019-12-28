@@ -16,5 +16,11 @@
   "bugs": {
     "url": "https://github.com/Nsuliman/Nawal-City-Explorer/issues"
   },
-  "homepage": "https://github.com/Nsuliman/Nawal-City-Explorer#readme"
+  "homepage": "https://github.com/Nsuliman/Nawal-City-Explorer#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "pg": "^7.16.0"
+  }
 }
