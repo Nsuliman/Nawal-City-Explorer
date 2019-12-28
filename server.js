@@ -50,8 +50,28 @@ function Location( data ) {
 server.get('/weather' , (req,res) =>
 {
     // res.send('Weather Ruote ');
+    const weatherData = require('./data/darksky.json');
+    console.log('weatherData : ', weatherData);
+    res.status(200).json(locWeather(weatherData.daily.data));
 
 }); // end of weather ruote 
+
+let weatherArray = [];
+
+function Weather( data ) {
+  this.forcast = data.summary;
+  this.time = new Date(data.time*1022.1).toDateString();
+} // end of con.fun of Weather 
+
+// Function for eather object , you can use another way 
+function locWeather(array)
+{
+    array.forEach(element => {
+    weatherArray.push(new Weather(element))
+  });
+
+return weatherArray;
+}; // end of locWeather function
 
 /***************************************** Errors Handlers *****************************************/
 
