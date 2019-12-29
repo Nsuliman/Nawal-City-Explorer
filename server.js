@@ -19,7 +19,7 @@ server.use(cors());
 
 /********* Function *********/
 server.get('/location', locationHandler);
-// server.get('/weather', weatherHandler);
+server.get('/weather', weatherHandler);
 // server.get('/events', eventHandler);
 
 
@@ -63,29 +63,35 @@ function Location(city, data) {
 /********************************* The Weather *************************************/
 // Weather 
 
-server.get('/weather', (req, res) => {
-  // res.send('Weather Ruote ');
-  const weatherData = require('./data/darksky.json');
-  console.log('weatherData : ', weatherData);
-  res.status(200).json(locWeather(weatherData.daily.data));
+function weatherHandler(request,response) {
+  console.log('request.query.data : ', request.query.data);
+  getWeather(request.query.data)
+    .then( weatherData => response.status(200).json(weatherData) );
 
-}); // end of weather ruote 
+} // End of weather handler function 
 
-let weatherArray = [];
+function getWeather(query) {
+  const url = `https://api.darksky.net/forecast/${process.env.DARKSKY_API_KEY}/${query.latitude},${query.longitude}`;
+  // console.log('url  : ', url );
 
-function Weather(data) {
-  this.forcast = data.summary;
-  this.time = new Date(data.time * 1022.1).toDateString();
-} // end of con.fun of Weather 
+  return superagent.get(url)
+    .then( data => {
+      console.log('data : ', data);
+      let weather = data.body;
+      console.log('weather : ', weather);
+      return weather.daily.data.map( (day) => {
+        return new Weather(day);
+      });
+    });
+}// End of get weather function 
 
-// Function for eather object , you can use another way 
-function locWeather(array) {
-  array.forEach(element => {
-    weatherArray.push(new Weather(element))
-  });
+function Weather(day) {
+  this.forecast = day.summary;
+  this.time = new Date(day.time * 1022.1).toDateString();
+} // End of weather constructor function 
 
-  return weatherArray;
-}; // end of locWeather function
+
+/******************************************* The Events ********************************************/
 
 /***************************************** Errors Handlers *****************************************/
 
