@@ -36,6 +36,7 @@ server.get('/location' , (req,res) =>
 
 }); // end of loaction ruote 
 
+
 // Location Constructor Function 
 function Location( data ) {
     this.search_query = 'lynnwood';
