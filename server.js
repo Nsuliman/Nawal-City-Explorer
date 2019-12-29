@@ -53,7 +53,7 @@ function getLocation(city) {
 
 
 // Location Constructor Function 
-function Location(city, data) {
+function Location(city,data) {
   this.search_query = city;
   this.formatted_query = data.results[0].formatted_address;
   this.latitude = data.results[0].geometry.location.lat;
@@ -71,6 +71,7 @@ function weatherHandler(request,response) {
 } // End of weather handler function 
 
 function getWeather(query) {
+  console.log('query : ', query);
   const url = `https://api.darksky.net/forecast/${process.env.DARKSKY_API_KEY}/${query.latitude},${query.longitude}`;
   // console.log('url  : ', url );
 
