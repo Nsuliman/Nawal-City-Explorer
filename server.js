@@ -106,6 +106,7 @@ function getEvent(query) {
 
   // console.log('dataaaaaaaaaaaaaaaaaaaaaaaaaaa : ', data);
 
+  
     // console.log('super agent urllllllllllll' ,superagent.get(url));
     return superagent.get(url)
     .then( data => {
