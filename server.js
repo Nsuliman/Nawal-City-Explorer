@@ -19,8 +19,8 @@ server.use(cors());
 
 /********* Function *********/
 server.get('/location', locationHandler);
-server.get('/weather', weatherHandler);
-server.get('/events', eventHandler);
+// server.get('/weather', weatherHandler);
+// server.get('/events', eventHandler);
 
 
 // test the sever is works , yes it does :) 
@@ -32,20 +32,23 @@ server.get('/', (req, res) => {
 // Location 
 
 function locationHandler(request, response) {
-  console.log('request.query.data : ', request.query.data);
-  getLocation(request.query.data)             // Get city input from user
+  console.log('request : ', request);
+  console.log('request.query: ', request.query);
+  getLocation(request.query.city)             // Get city input from user
     .then(locationData => response.status(200).json(locationData));            // To show up the generated data 
 } // End of location handler function 
 
 function getLocation(city) {
 
-  const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${city}&key=${process.env.GEOCODE_API_KEY}`
+  // const url = `https://eu1.locationiq.com/v1/search.php?key=${process.env.TOKEN}&q=${city}&format=json`
+  // const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${city}&key=${process.env.GEOCODE_API_KEY}`
+  const url = `https://us1.locationiq.com/v1/search.php?key=${process.env.GEOCODE_API_KEY}&q=${city}&format=json`
 
   return superagent.get(url)
     .then(data => {
-      // console.log('\n\n\n\n\n\n\n\n data : ', data.header);
-      // console.log('data.body : ', data.body);
-      return new Location(city, data.body);
+      console.log('\n\n\n\n\n\n\n\n data : ', data);
+      console.log('data.body : ', data.body);
+      return new Location(data);
     })
 
 } // End of get location function 
@@ -53,11 +56,10 @@ function getLocation(city) {
 
 
 // Location Constructor Function 
-function Location(city, data) {
-  this.search_query = city;
-  this.formatted_query = data.results[0].formatted_address;
-  this.latitude = data.results[0].geometry.location.lat;
-  this.longitude = data.results[0].geometry.location.lng;
+function Location(data) {
+  this.formatted_query = data[0].display_name;
+  this.latitude = data[0].lat;
+  this.longitude = data[0].lon;
 } // end of con.fun of Location 
 
 /********************************* The Weather *************************************/
