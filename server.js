@@ -20,7 +20,7 @@ server.use(cors());
 /********* Function *********/
 server.get('/location', locationHandler);
 server.get('/weather', weatherHandler);
-// server.get('/events', eventHandler);
+server.get('/events', eventHandler);
 
 
 // test the sever is works , yes it does :) 
@@ -32,8 +32,8 @@ server.get('/', (req, res) => {
 // Location 
 
 function locationHandler(request, response) {
-  console.log('request : ', request);
-  console.log('request.query: ', request.query);
+  // console.log('request : ', request);
+  // console.log('request.query: ', request.query);
   getLocation(request.query.city)             // Get city input from user
     .then(locationData => response.status(200).json(locationData));            // To show up the generated data 
 } // End of location handler function 
@@ -45,8 +45,8 @@ function getLocation(city) {
 
   return superagent.get(url)
     .then(data => {
-      console.log('\n\n\n\n\n\n\n\n data : ', data);
-      console.log('data.body : ', data.body[0]);
+      // console.log('\n\n\n\n\n\n\n\n data : ', data);
+      // console.log('data.body : ', data.body[0]);
       return new Location(data.body[0]);
     })
 
@@ -65,8 +65,8 @@ function Location(data) {
 // Weather 
 
 function weatherHandler(request,response) {
-  console.log('request : ', request);
-  console.log('request.query : ', request.query);
+  // console.log('request : ', request);
+  // console.log('request.query : ', request.query);
   getWeather(request.query)
     .then( weatherData => response.status(200).json(weatherData) );
 
@@ -80,9 +80,9 @@ function getWeather(query) {
 
   return superagent.get(url)
     .then( data => {
-      console.log('data : ', data);
+      // console.log('data : ', data);
       let weather = data.body;
-      console.log('weather : ', weather);
+      // console.log('weather : ', weather);
       return weather.daily.data.map( (day) => {
         return new Weather(day);
       })
@@ -90,7 +90,7 @@ function getWeather(query) {
 }// End of get weather function 
 
 function Weather(day) {
-  this.name = 'weather';
+  // this.name = 'weather';
   this.forecast = day.summary;
   this.time = new Date(day.time * 1022.1).toDateString();
 } // End of weather constructor function 
@@ -105,29 +105,29 @@ function eventHandler(request,response) {
 } // End of event handler function 
 
 function getEvent(query) {
-  const url = `http://api.eventful.com/keys?new_key=${process.env.EVENTFUL_API_KEY}/${query.latitude},${query.longitude}`;
-  console.log('url eventttttttttttttttttttttttttttttttttttttttttttt : ', url );
-  console.log('queryyyyyyyyyyyyyyyyyyyyyyyyyyy : ', query);
+  const url = `http://api.eventful.com/json/events/search?app_key=${process.env.EVENTFUL_API_KEY}&location=${query.formatted_query}`
+    // console.log('url eventttttttttttttttttttttttttttttttttttttttttttt : \n\n\n\n\n\n', url );
+    console.log('queryyyyyyyyyyyyyyyyyyyyyyyyyyy : ', query);
 
-  // console.log('dataaaaaaaaaaaaaaaaaaaaaaaaaaa : ', data);
 
-  
     // console.log('super agent urllllllllllll' ,superagent.get(url));
     return superagent.get(url)
-    .then( data => {
-      let eventful = data.body;
-      console.log('data.body : ', data.body);
-      return eventful.daily.data.map( (day) => {
-        return new Eventful(day);
+    .then( data => {   
+      // console.log('data 2 : ', data );   
+      const eventful = JSON.parse(data.text);
+      // console.log('eventful ', eventful);
+      return eventful.events.event.map( (eventday) => {
+        // console.log('eventday : ', eventday);
+        return new Eventful(eventday);
       });
     });
 }// End of get eventful function 
 
 function Eventful(day) {
-  this.link = url;
-  this.name = query.search_query;
-  this.event_date = new Date(day.time * 1022.1).toDateString();
-  this.summary = query.summary;
+  this.link = day.url;
+  this.name = day.title;
+  this.event_date = day.start_time;
+  this.summary = day.description;
 
 } // End of Eventful constructor function 
 
