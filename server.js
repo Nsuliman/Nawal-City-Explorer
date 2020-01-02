@@ -19,7 +19,7 @@ server.use(cors());
 
 /********* Function *********/
 server.get('/location', locationHandler);
-// server.get('/weather', weatherHandler);
+server.get('/weather', weatherHandler);
 // server.get('/events', eventHandler);
 
 
@@ -41,14 +41,13 @@ function locationHandler(request, response) {
 function getLocation(city) {
 
   // const url = `https://eu1.locationiq.com/v1/search.php?key=${process.env.TOKEN}&q=${city}&format=json`
-  // const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${city}&key=${process.env.GEOCODE_API_KEY}`
   const url = `https://us1.locationiq.com/v1/search.php?key=${process.env.GEOCODE_API_KEY}&q=${city}&format=json`
 
   return superagent.get(url)
     .then(data => {
       console.log('\n\n\n\n\n\n\n\n data : ', data);
-      console.log('data.body : ', data.body);
-      return new Location(data);
+      console.log('data.body : ', data.body[0]);
+      return new Location(data.body[0]);
     })
 
 } // End of get location function 
@@ -57,24 +56,27 @@ function getLocation(city) {
 
 // Location Constructor Function 
 function Location(data) {
-  this.formatted_query = data[0].display_name;
-  this.latitude = data[0].lat;
-  this.longitude = data[0].lon;
+  this.formatted_query = data.display_name;
+  this.latitude = data.lat;
+  this.longitude = data.lon;
 } // end of con.fun of Location 
 
 /********************************* The Weather *************************************/
 // Weather 
 
 function weatherHandler(request,response) {
-  console.log('request.query.data : ', request.query.data);
-  getWeather(request.query.data)
+  console.log('request : ', request);
+  console.log('request.query : ', request.query);
+  getWeather(request.query)
     .then( weatherData => response.status(200).json(weatherData) );
 
 } // End of weather handler function 
 
 function getWeather(query) {
   const url = `https://api.darksky.net/forecast/${process.env.DARKSKY_API_KEY}/${query.latitude},${query.longitude}`;
-  // console.log('url  : ', url );
+  // const url = `https://api.darksky.net/forecast/${process.env.DARKSKY_API_KEY}`;
+
+  console.log('url  : ', url );
 
   return superagent.get(url)
     .then( data => {
@@ -83,11 +85,12 @@ function getWeather(query) {
       console.log('weather : ', weather);
       return weather.daily.data.map( (day) => {
         return new Weather(day);
-      });
-    });
+      })
+    })
 }// End of get weather function 
 
 function Weather(day) {
+  this.name = 'weather';
   this.forecast = day.summary;
   this.time = new Date(day.time * 1022.1).toDateString();
 } // End of weather constructor function 
@@ -96,7 +99,7 @@ function Weather(day) {
 /******************************************* The Events ********************************************/
 
 function eventHandler(request,response) {
-  getEvent(request.query.data)
+  getEvent(request.query)
     .then( eventData => response.status(200).json(eventData) );
 
 } // End of event handler function 
