@@ -22,6 +22,8 @@ server.get('/location', locationHandler);
 server.get('/weather', weatherHandler);
 server.get('/events', eventHandler);
 server.get('/movies', movieHandler);
+// server.get('/yelp', yelpHandler);
+server.get('/trails', trailHandler);
 
 
 // test the sever is works , yes it does :) 
@@ -143,12 +145,12 @@ function movieHandler(request,response) {
 
 function getMovie(query)
 {
-  console.log('queryyyyyyyyyyyyyyyyyyyyyyy Movies : ', query);
+  // console.log('queryyyyyyyyyyyyyyyyyyyyyyy Movies : ', query);
   const url = `https://api.themoviedb.org/3/search/movie?api_key=${process.env.MOVIES_API_KEY}&query=${query.search_query}`;
 
   return superagent.get(url)
   .then( data => {   
-    console.log('movies Data \n\n : ', data.body);
+    // console.log('movies Data \n\n : ', data.body);
     return data.body.results.map(movie => {
       return new Movies(movie);
     })
@@ -167,10 +169,39 @@ function Movies(data) {
 } // End of Movies constructor function 
 
 /********************************* The Yelp *************************************/
+function yelpHandler (request,response) {
+  getYelp(request.query)
+    .then( yelpData => response.status(200).send(yelpData) );
+
+} // End of Yelp handler function 
+
+function getYelp (query) {
+  const url = `https://api.yelp.com/v3/businesses/search?location=${query.search_query}`
+
+
+    return superagent.get(url)
+        .set('Authorization', `nawal ${process.env.YELP_API_KEY}`)
+        .then(data => {
+          console.log('data : ', data);
+            let yelpPath = data.body.businesses;
+            return yelpPath.map(yelp => {
+                return new Yelp(yelp)
+            })
+        })
+} // end of getYelp function 
+
+function Yelp () 
+{
+  this.name = ' Yelppppppp';
+}
 
 
 /********************************* The Trials *************************************/
 
+function trailHandler()
+{
+
+}
 
 /***************************************** Errors Handlers *****************************************/
 
