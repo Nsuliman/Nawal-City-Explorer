@@ -21,6 +21,7 @@ server.use(cors());
 server.get('/location', locationHandler);
 server.get('/weather', weatherHandler);
 server.get('/events', eventHandler);
+server.get('/movies', movieHandler);
 
 
 // test the sever is works , yes it does :) 
@@ -47,7 +48,7 @@ function getLocation(city) {
     .then(data => {
       // console.log('\n\n\n\n\n\n\n\n data : ', data);
       // console.log('data.body : ', data.body[0]);
-      return new Location(data.body[0]);
+      return new Location(city,data.body[0]);
     })
 
 } // End of get location function 
@@ -55,7 +56,8 @@ function getLocation(city) {
 
 
 // Location Constructor Function 
-function Location(data) {
+function Location(city,data) {
+  this.search_query = city;
   this.formatted_query = data.display_name;
   this.latitude = data.lat;
   this.longitude = data.lon;
@@ -74,9 +76,8 @@ function weatherHandler(request,response) {
 
 function getWeather(query) {
   const url = `https://api.darksky.net/forecast/${process.env.DARKSKY_API_KEY}/${query.latitude},${query.longitude}`;
-  // const url = `https://api.darksky.net/forecast/${process.env.DARKSKY_API_KEY}`;
 
-  console.log('url  : ', url );
+  // console.log('url  : ', url );
 
   return superagent.get(url)
     .then( data => {
@@ -90,7 +91,7 @@ function getWeather(query) {
 }// End of get weather function 
 
 function Weather(day) {
-  // this.name = 'weather';
+  this.name = 'weather';
   this.forecast = day.summary;
   this.time = new Date(day.time * 1022.1).toDateString();
 } // End of weather constructor function 
@@ -107,7 +108,7 @@ function eventHandler(request,response) {
 function getEvent(query) {
   const url = `http://api.eventful.com/json/events/search?app_key=${process.env.EVENTFUL_API_KEY}&location=${query.formatted_query}`
     // console.log('url eventttttttttttttttttttttttttttttttttttttttttttt : \n\n\n\n\n\n', url );
-    console.log('queryyyyyyyyyyyyyyyyyyyyyyyyyyy : ', query);
+    // console.log('queryyyyyyyyyyyyyyyyyyyyyyyyyyy : ', query);
 
 
     // console.log('super agent urllllllllllll' ,superagent.get(url));
@@ -133,6 +134,37 @@ function Eventful(day) {
 
 /********************************* The Movies *************************************/
 
+function movieHandler(request,response) {
+  getMovie(request.query)
+    .then( movieData => response.status(200).json(movieData) );
+
+} // End of movie handler function 
+
+
+function getMovie(query)
+{
+  console.log('queryyyyyyyyyyyyyyyyyyyyyyy Movies : ', query);
+  const url = `https://api.themoviedb.org/3/search/movie?api_key=${process.env.MOVIES_API_KEY}&query=${query.search_query}`;
+
+  return superagent.get(url)
+  .then( data => {   
+    console.log('movies Data \n\n : ', data.body);
+    return data.body.results.map(movie => {
+      return new Movies(movie);
+    })
+  })
+
+}// End of get movies function
+
+function Movies(data) {
+  this.title = data.title;
+  this.overview = data.overview;
+  this.average_votes = data.vote_average;
+  this.popularity = data.popularity;
+  this.released_date = data.release_date;
+  // this.image_url = `https://image.tmdb.org/t/p/w500${data.poster_path}`;
+
+} // End of Movies constructor function 
 
 /********************************* The Yelp *************************************/
 
