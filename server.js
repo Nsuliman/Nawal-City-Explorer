@@ -53,7 +53,7 @@ function getLocation(city) {
       return new Location(city, data.body[0]);
     })
     .catch(error => {
-      errorHandler(error, req, res)
+      errorHandler(error,req,res);
     })
 
 } // End of get location function 
@@ -94,7 +94,7 @@ function getWeather(query) {
       })
     })
     .catch(error => {
-      errorHandler(error, req, res)
+      errorHandler(error,req,res);
     })
 }// End of get weather function 
 
@@ -131,7 +131,7 @@ function getEvent(query) {
       })
     })
     .catch(error => {
-      errorHandler(error, req, res)
+      errorHandler(error,req,res);
     })
 }// End of get eventful function 
 
@@ -164,7 +164,7 @@ function getMovie(query) {
       })
     })
     .catch(error => {
-      errorHandler(error, req, res)
+      errorHandler(error,req,res);
     })
 
 }// End of get movies function
@@ -200,7 +200,7 @@ function getYelp(query) {
       })
     })
     .catch(error => {
-      errorHandler(error, req, res)
+      errorHandler(error,req,res);
     })
 } // end of getYelp function 
 
@@ -218,19 +218,19 @@ function trailHandler(request, response) {
 
 function getTrail(query) {
 
-  console.log('query Trailssssssssssssssssss \n\n\n\n\n: ', query);
+  // console.log('query Trailssssssssssssssssss \n\n\n\n\n: ', query);
   const url = `https://www.hikingproject.com/data/get-trails?lat=${query.latitude}&lon=${query.longitude}&maxDistance=200&key=${process.env.TRAIL_PRIVATE_KEY}`
 
   return superagent.get(url)
     .then(data => {
-      console.log('data : ', data);
+      // console.log('data : ', data);
       let traiPath = data.body;
       return traiPath.trails.map(trail => {
         return new Trail(trail)
       })
     })
     .catch(error => {
-      errorHandler(error, req, res)
+      errorHandler(error,req,res);
     })
 } // end of getTrail function
 
@@ -257,7 +257,7 @@ server.use('*', (request, response) => {
 });
 
 // Server Error , Any Error
-function errorHandler(error, request, response) {
+function errorHandler(error,request,response) {
   response.status(500).send(error);
 }
 
