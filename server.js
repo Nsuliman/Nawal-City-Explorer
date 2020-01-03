@@ -27,8 +27,8 @@ server.get('/trails', trailHandler);
 
 
 // test the sever is works , yes it does :) 
-server.get('/', (req, res) => {
-  res.status(200).send('The Root/Home Ruote , It\'s Works ');
+server.get('/', (request, response) => {
+  response.status(200).send('The Root/Home Ruote , It\'s Works ');
 });
 
 /********************************* The Location *************************************/
@@ -50,7 +50,10 @@ function getLocation(city) {
     .then(data => {
       // console.log('\n\n\n\n\n\n\n\n data : ', data);
       // console.log('data.body : ', data.body[0]);
-      return new Location(city,data.body[0]);
+      return new Location(city, data.body[0]);
+    })
+    .catch(error => {
+      errorHandler(error, req, res)
     })
 
 } // End of get location function 
@@ -58,7 +61,7 @@ function getLocation(city) {
 
 
 // Location Constructor Function 
-function Location(city,data) {
+function Location(city, data) {
   this.search_query = city;
   this.formatted_query = data.display_name;
   this.latitude = data.lat;
@@ -68,11 +71,11 @@ function Location(city,data) {
 /********************************* The Weather *************************************/
 // Weather 
 
-function weatherHandler(request,response) {
+function weatherHandler(request, response) {
   // console.log('request : ', request);
   // console.log('request.query : ', request.query);
   getWeather(request.query)
-    .then( weatherData => response.status(200).json(weatherData) );
+    .then(weatherData => response.status(200).json(weatherData));
 
 } // End of weather handler function 
 
@@ -82,13 +85,16 @@ function getWeather(query) {
   // console.log('url  : ', url );
 
   return superagent.get(url)
-    .then( data => {
+    .then(data => {
       // console.log('data : ', data);
       let weather = data.body;
       // console.log('weather : ', weather);
-      return weather.daily.data.map( (day) => {
+      return weather.daily.data.map((day) => {
         return new Weather(day);
       })
+    })
+    .catch(error => {
+      errorHandler(error, req, res)
     })
 }// End of get weather function 
 
@@ -101,29 +107,32 @@ function Weather(day) {
 
 /******************************************* The Events ********************************************/
 
-function eventHandler(request,response) {
+function eventHandler(request, response) {
   getEvent(request.query)
-    .then( eventData => response.status(200).json(eventData) );
+    .then(eventData => response.status(200).json(eventData));
 
 } // End of event handler function 
 
 function getEvent(query) {
   const url = `http://api.eventful.com/json/events/search?app_key=${process.env.EVENTFUL_API_KEY}&location=${query.formatted_query}`
-    // console.log('url eventttttttttttttttttttttttttttttttttttttttttttt : \n\n\n\n\n\n', url );
-    // console.log('queryyyyyyyyyyyyyyyyyyyyyyyyyyy : ', query);
+  // console.log('url eventttttttttttttttttttttttttttttttttttttttttttt : \n\n\n\n\n\n', url );
+  // console.log('queryyyyyyyyyyyyyyyyyyyyyyyyyyy : ', query);
 
 
-    // console.log('super agent urllllllllllll' ,superagent.get(url));
-    return superagent.get(url)
-    .then( data => {   
+  // console.log('super agent urllllllllllll' ,superagent.get(url));
+  return superagent.get(url)
+    .then(data => {
       // console.log('data 2 : ', data );   
       const eventful = JSON.parse(data.text);
       // console.log('eventful ', eventful);
-      return eventful.events.event.map( (eventday) => {
+      return eventful.events.event.map((eventday) => {
         // console.log('eventday : ', eventday);
         return new Eventful(eventday);
-      });
-    });
+      })
+    })
+    .catch(error => {
+      errorHandler(error, req, res)
+    })
 }// End of get eventful function 
 
 function Eventful(day) {
@@ -136,25 +145,27 @@ function Eventful(day) {
 
 /********************************* The Movies *************************************/
 
-function movieHandler(request,response) {
+function movieHandler(request, response) {
   getMovie(request.query)
-    .then( movieData => response.status(200).send(movieData) );
+    .then(movieData => response.status(200).send(movieData));
 
 } // End of movie handler function 
 
 
-function getMovie(query)
-{
+function getMovie(query) {
   // console.log('queryyyyyyyyyyyyyyyyyyyyyyy Movies : ', query);
   const url = `https://api.themoviedb.org/3/search/movie?api_key=${process.env.MOVIES_API_KEY}&query=${query.search_query}`;
 
   return superagent.get(url)
-  .then( data => {   
-    // console.log('movies Data \n\n : ', data.body);
-    return data.body.results.map(movie => {
-      return new Movies(movie);
+    .then(data => {
+      // console.log('movies Data \n\n : ', data.body);
+      return data.body.results.map(movie => {
+        return new Movies(movie);
+      })
     })
-  })
+    .catch(error => {
+      errorHandler(error, req, res)
+    })
 
 }// End of get movies function
 
@@ -169,50 +180,85 @@ function Movies(data) {
 } // End of Movies constructor function 
 
 /********************************* The Yelp *************************************/
-function yelpHandler (request,response) {
+function yelpHandler(request, response) {
   getYelp(request.query)
-    .then( yelpData => response.status(200).send(yelpData) );
+    .then(yelpData => response.status(200).send(yelpData));
 
 } // End of Yelp handler function 
 
-function getYelp (query) {
+function getYelp(query) {
   const url = `https://api.yelp.com/v3/businesses/search?location=${query.search_query}`
 
 
-    return superagent.get(url)
-        .set('Authorization', `nawal ${process.env.YELP_API_KEY}`)
-        .then(data => {
-          console.log('data : ', data);
-            let yelpPath = data.body.businesses;
-            return yelpPath.map(yelp => {
-                return new Yelp(yelp)
-            })
-        })
+  return superagent.get(url)
+    .set('Authorization', `nawal ${process.env.YELP_API_KEY}`)
+    .then(data => {
+      console.log('data : ', data);
+      let yelpPath = data.body.businesses;
+      return yelpPath.map(yelp => {
+        return new Yelp(yelp)
+      })
+    })
+    .catch(error => {
+      errorHandler(error, req, res)
+    })
 } // end of getYelp function 
 
-function Yelp () 
-{
+function Yelp() {
   this.name = ' Yelppppppp';
 }
 
 
 /********************************* The Trials *************************************/
 
-function trailHandler()
-{
+function trailHandler(request, response) {
+  getTrail(request.query)
+    .then(trailData => response.status(200).send(trailData));
+} // End of trails handler function 
 
-}
+function getTrail(query) {
+
+  console.log('query Trailssssssssssssssssss \n\n\n\n\n: ', query);
+  const url = `https://www.hikingproject.com/data/get-trails?lat=${query.latitude}&lon=${query.longitude}&maxDistance=200&key=${process.env.TRAIL_PRIVATE_KEY}`
+
+  return superagent.get(url)
+    .then(data => {
+      console.log('data : ', data);
+      let traiPath = data.body;
+      return traiPath.trails.map(trail => {
+        return new Trail(trail)
+      })
+    })
+    .catch(error => {
+      errorHandler(error, req, res)
+    })
+} // end of getTrail function
+
+
+function Trail(data) {
+  // this.name = ' Trails ';
+  this.name = data.name
+  this.location = data.location;
+  this.length = data.length;
+  this.stars = data.stars;
+  this.star_votes = data.starVotes
+  this.summary = data.summary;
+  this.trail_url = data.url;
+  this.conditions = data.conditionDetails;
+
+} // ens of Trails constructor function 
+
 
 /***************************************** Errors Handlers *****************************************/
 
 // User Error 
-server.use('*', (req, res) => {
-  res.status(404).send('Not Found');
+server.use('*', (request, response) => {
+  response.status(404).send('Not Found');
 });
 
 // Server Error , Any Error
-server.use((error, req, res) => {
-  res.status(500).send(error);
-});
+function errorHandler(error, request, response) {
+  response.status(500).send(error);
+}
 
 server.listen(PORT, () => console.log(`I am a live , Server Listening on port ${PORT}`));
