@@ -136,7 +136,7 @@ function Eventful(day) {
 
 function movieHandler(request,response) {
   getMovie(request.query)
-    .then( movieData => response.status(200).json(movieData) );
+    .then( movieData => response.status(200).send(movieData) );
 
 } // End of movie handler function 
 
@@ -162,7 +162,7 @@ function Movies(data) {
   this.average_votes = data.vote_average;
   this.popularity = data.popularity;
   this.released_date = data.release_date;
-  // this.image_url = `https://image.tmdb.org/t/p/w500${data.poster_path}`;
+  this.image_url = `https://image.tmdb.org/t/p/w500${data.poster_path}`;
 
 } // End of Movies constructor function 
 
