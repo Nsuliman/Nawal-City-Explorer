@@ -30,3 +30,8 @@ function getLocation(city) {
     this.latitude = data.lat;
     this.longitude = data.lon;
   } // end of con.fun of Location 
+
+// Server Error , Any Error
+function errorHandler(error,request,response) {
+  response.status(500).send(error);
+}

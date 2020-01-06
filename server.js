@@ -103,8 +103,8 @@ server.use('*', (request, response) => {
 });
 
 // Server Error , Any Error
-function errorHandler(error,request,response) {
-  response.status(500).send(error);
-}
+// function errorHandler(error,request,response) {
+//   response.status(500).send(error);
+// }
 
 server.listen(PORT, () => console.log(`I am a live , Server Listening on port ${PORT}`));

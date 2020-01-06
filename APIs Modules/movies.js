@@ -30,3 +30,8 @@ function getMovie(query) {
     this.image_url = `https://image.tmdb.org/t/p/w500${data.poster_path}`;
   
   } // End of Movies constructor function 
+
+// Server Error , Any Error
+function errorHandler(error,request,response) {
+  response.status(500).send(error);
+}

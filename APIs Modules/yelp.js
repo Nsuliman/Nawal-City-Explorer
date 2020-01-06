@@ -25,3 +25,8 @@ function getYelp(query) {
   function Yelp() {
     this.name = ' Yelppppppp';
   }
+
+// Server Error , Any Error
+function errorHandler(error,request,response) {
+  response.status(500).send(error);
+}

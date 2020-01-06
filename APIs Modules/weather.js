@@ -28,3 +28,8 @@ function getWeather(query) {
     this.forecast = day.summary;
     this.time = new Date(day.time * 1022.1).toDateString();
   } // End of weather constructor function 
+
+// Server Error , Any Error
+function errorHandler(error,request,response) {
+  response.status(500).send(error);
+}

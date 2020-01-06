@@ -36,3 +36,7 @@ function getTrail(query) {
   
   } // ens of Trails constructor function 
   
+// Server Error , Any Error
+function errorHandler(error,request,response) {
+  response.status(500).send(error);
+}
