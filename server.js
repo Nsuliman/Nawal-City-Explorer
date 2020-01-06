@@ -49,8 +49,6 @@ function locationHandler(request, response) {
     .then(locationData => response.status(200).json(locationData));            // To show up the generated data 
 } // End of location handler function 
 
-
-
 /********************************* The Weather *************************************/
 
 // Weather 
